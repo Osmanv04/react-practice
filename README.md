@@ -29,17 +29,17 @@ npm run dev
 
 Cada lección vive en su propia rama para aislar los conceptos:
 
-| Rama                                         | Descripción                       | Conceptos Clave                    |
-| :------------------------------------------- | :-------------------------------- | :--------------------------------- |
-| `main`                                       | Base del proyecto y documentación | Vite, setup, arquitectura          |
-| `lesson/01-componentes-y-jsx`                | Componentes y JSX                 | Funciones, JSX, Props, SRP         |
-| `lesson/02-gestion-de-estado-y-eventos`      | Estado y Eventos                  | `useState`, manejadores de eventos |
-| `lesson/03-composicion-vs-prop-drilling`     | Composición                       | `children`, evitar prop drilling   |
-| `lesson/04-custom-hooks`                     | Custom Hooks                      | Reutilización de lógica reactiva   |
-| `lesson/05-patron-contenedor-presentacional` | Patrón Contenedor/Presentacional  | Separación lógica vs interfaz      |
-| `lesson/06-listas-y-keys-estables`           | Renderizado de Listas             | `.map()`, keys únicas y estables   |
-
----
+| Rama | Descripción | Conceptos Clave |
+| :--- | :--- | :--- |
+| `main` | Base del proyecto y documentación | Vite, setup, arquitectura |
+| `lesson/01-componentes-y-jsx` | Componentes y JSX | Funciones, JSX, Props, SRP |
+| `lesson/02-gestion-de-estado-y-eventos` | Estado y Eventos | `useState`, manejadores de eventos |
+| `lesson/03-composicion-vs-prop-drilling` | Composición | `children`, evitar prop drilling |
+| `lesson/04-custom-hooks` | Custom Hooks | Reutilización de lógica reactiva |
+| `lesson/05-patron-contenedor-presentacional` | Patrón Contenedor/Presentacional | Separación lógica vs interfaz |
+| `lesson/06-listas-y-keys-estables` | Renderizado de Listas | `.map()`, keys únicas y estables |
+| `lesson/07-react-router` | Navegación y Rutas (React Router v6/v7) | SPA, `BrowserRouter`, `Routes`, `Route`, `Link`, `useParams`, `useNavigate` |
+| `lesson/08-estado-global-zustand` | Estado Global con Zustand | `create`, selector stores, persistencia, sin boilerplate |
 
 ## 🔄 Cómo navegar entre lecciones
 
