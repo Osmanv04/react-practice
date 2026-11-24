@@ -1,100 +1,101 @@
-# ⚛️ Repositorio de Aprendizaje: React desde Cero (JS)
+# 📘 Lección 08: Estado Global con Zustand
 
-Este repositorio está estructurado para aprender React paso a paso mediante ramas (`branches`). La rama `main` contiene la configuración base del proyecto, las instrucciones de configuración y la guía de arquitectura y buenas prácticas. Cada rama posterior (`lesson/...`) contiene una lección práctica con ejemplos y código funcional.
+En esta lección aprenderás a gestionar el estado global de una aplicación de forma simple, rápida y sin boilerplate utilizando **Zustand**.
 
 ---
 
-## 🛠️ Cómo se creó este proyecto
+## 🎯 Objetivos de Aprendizaje
 
-Este proyecto fue inicializado con **Vite** y la plantilla de **React con JavaScript**:
+1. Entender cuándo se requiere **Estado Global** vs **Estado Local**.
+2. Conocer las ventajas de Zustand frente a Redux y Context API.
+3. Crear un *Store* centralizado con la función `create` de Zustand.
+4. Consumir y modificar el estado global desde cualquier componente sin necesidad de `<Provider>`.
+5. Utilizar **Selectores** para evitar re-renderizados innecesarios y optimizar el rendimiento.
+6. Persistir el estado automáticamente en `localStorage` usando el middleware `persist`.
+
+---
+
+## 🧠 Conceptos Clave
+
+### 1. ¿Por qué Estado Global?
+El estado global es necesario cuando múltiples componentes que **no están relacionados jerárquicamente** (o que están muy separados en el árbol de componentes) necesitan leer o modificar la misma información compartida. 
+
+Ejemplos comunes:
+- Un carrito de compras que se actualiza desde tarjetas de productos y se lee en la barra de navegación y en el checkout.
+- La sesión y autenticación del usuario actual.
+- Preferencias de la aplicación (tema oscuro/claro, idioma).
+
+### 2. ¿Por qué Zustand?
+Zustand es actualmente la solución de estado global más popular y ligera en el ecosistema moderno de React:
+
+- **Cero boilerplate:** No necesitas definir *actions*, *reducers*, *dispatchers* ni envolver toda tu aplicación con `<Providers>` complejos como en Redux o Context API.
+- **Renderizados óptimos:** Permite suscribirse únicamente a la porción de estado que el componente específico necesita mediante **selectores**, evitando re-renderizados innecesarios en el resto de la interfaz.
+- **Persistencia sencilla:** Permite guardar y sincronizar el estado en `localStorage` o `sessionStorage` con un simple middleware (`persist`), sobreviviendo a recargas de pantalla.
+
+### 3. ¿Cómo funciona Zustand en código?
+Zustand crea un *hook* personalizado que conecta cualquier componente con una tienda de datos externa:
+
+```jsx
+import { create } from 'zustand';
+
+export const useCartStore = create((set) => ({
+  items: [],
+  addItem: (product) => set((state) => ({ items: [...state.items, product] })),
+  clearCart: () => set({ items: [] }),
+}));
+```
+
+### 4. Uso en Componentes (con selectores)
+Para evitar que un componente se re-renderice si cambia algo del store que no le interesa, extraemos únicamente lo que necesitamos:
+
+```jsx
+// Solo se re-renderiza cuando la cantidad de items cambia
+const count = useCartStore((state) => state.items.length);
+const addItem = useCartStore((state) => state.addItem);
+```
+
+### 5. Persistencia con `persist`
+Con una sola línea de configuración podemos hacer que el estado persista:
+
+```jsx
+import { persist } from 'zustand/middleware';
+
+export const useCartStore = create(
+  persist(
+    (set, get) => ({ ... }),
+    { name: 'shopping-cart-storage' }
+  )
+);
+```
+
+---
+
+## 📂 Archivos de esta Lección
+
+- `src/store/useCartStore.js`: Store global de un carrito de compras (productos, total, agregar, eliminar y persistencia).
+- `src/components/Navbar.jsx`: Muestra el contador global de productos en tiempo real.
+- `src/components/ProductCard.jsx`: Permite agregar productos al store global.
+- `src/components/CartView.jsx`: Visualiza los artículos agregados, calcula el total y permite vaciar el carrito.
+- `src/App.jsx`: Ensamblado de la aplicación.
+
+---
+
+## ✏️ Reto Práctico: Tu Turno
+
+1. **Control de Cantidades:**
+   - Si se agrega el mismo producto dos veces, en lugar de duplicar el elemento en el array, incrementa su propiedad `quantity: number`.
+2. **Botón para Incrementar/Disminuir cantidad:**
+   - En `CartView.jsx`, agrega botones `+` y `-` para cada producto en el carrito.
+3. **Crear un Theme Store (`useThemeStore.js`):**
+   - Crea una tienda global para alternar entre modo claro (`light`) y modo oscuro (`dark`).
+   - Conéctalo con un botón en el `Navbar`.
+
+---
+
+## 🚀 Cómo ejecutar esta lección
 
 ```bash
-# 1. Crear proyecto React (JavaScript) con Vite
-npm create vite@latest . -- --template react
-
-# 2. Inicializar repositorio Git
-git init
-git branch -M main
-
-# 3. Instalar dependencias
-npm install
-
-# 4. Iniciar servidor de desarrollo
 npm run dev
 ```
 
----
-
-## 🌿 Estructura de Ramas (Lecciones)
-
-Cada lección vive en su propia rama para aislar los conceptos:
-
-| Rama                                         | Descripción                       | Conceptos Clave                    |
-| :------------------------------------------- | :-------------------------------- | :--------------------------------- |
-| `main`                                       | Base del proyecto y documentación | Vite, setup, arquitectura          |
-| `lesson/01-componentes-y-jsx`                | Componentes y JSX                 | Funciones, JSX, Props, SRP         |
-| `lesson/02-gestion-de-estado-y-eventos`      | Estado y Eventos                  | `useState`, manejadores de eventos |
-| `lesson/03-composicion-vs-prop-drilling`     | Composición                       | `children`, evitar prop drilling   |
-| `lesson/04-custom-hooks`                     | Custom Hooks                      | Reutilización de lógica reactiva   |
-| `lesson/05-patron-contenedor-presentacional` | Patrón Contenedor/Presentacional  | Separación lógica vs interfaz      |
-| `lesson/06-listas-y-keys-estables`           | Renderizado de Listas             | `.map()`, keys únicas y estables   |
-
----
-
-## 🔄 Cómo navegar entre lecciones
-
-Para ver todas las lecciones disponibles:
-
-```bash
-git branch -a
-```
-
-Para cambiarte a una lección específica y explorarla:
-
-```bash
-git checkout lesson/01-componentes-y-jsx
-npm run dev
-```
-
-Para regresar a la rama principal:
-
-```bash
-git checkout main
-```
-
----
-
-## 📁 Arquitectura Recomendada por Funcionalidad (Features)
-
-Para proyectos escalables en React, se recomienda estructurar por **funcionalidades (features)** en lugar de agrupar sólo por tipo de archivo:
-
-```text
-src/
-├── assets/                  # Recursos estáticos globales (imágenes, SVGs)
-├── components/              # Componentes de UI genéricos (Button, Modal, Input)
-├── features/                # Módulos organizados por funcionalidad
-│   ├── auth/
-│   │   ├── components/      # LoginForm.jsx, UserMenu.jsx
-│   │   ├── hooks/           # useAuth.js
-│   │   └── api/             # authApi.js
-│   └── products/
-│       ├── components/      # ProductCard.jsx, ProductList.jsx
-│       ├── hooks/           # useProducts.js
-│       └── utils/           # formatPrice.js
-├── hooks/                   # Custom hooks globales reutilizables
-├── services/                # Clientes API y llamadas externas
-└── utils/                  # Funciones utilitarias globales
-```
-
----
-
-## 📐 Principios de Buenas Prácticas
-
-1. **Responsabilidad Única (SRP):** Cada componente debe hacer una sola cosa y hacerla bien. Si supera 100-150 líneas o mezcla demasiadas responsabilidades, divídelo.
-2. **Separación de Lógica y Presentación:**
-   - _Contenedor:_ Maneja el estado, llamadas a APIs y lógica de negocio.
-   - _Presentacional:_ Componentes puros enfocados solo en renderizar la UI a partir de props.
-3. **Custom Hooks:** Encapsula lógica con estado (`useState`, `useEffect`) en funciones reutilizables (`useFetch`, `useForm`).
-4. **Composición con `children`:** Evita pasar props por 5 niveles innecesarios usando la propiedad `children`.
-5. **Estado Local Cercano:** Mantén el estado en el componente más cercano que lo necesita, evitando estados globales prematuros.
-6. **Keys Únicas y Estables:** Al renderizar listas con `.map()`, usa siempre IDs únicos (`item.id`). Evita usar el índice (`index`) del array como key.
+Abre [http://localhost:5173](http://localhost:5173), interactúa con los productos y prueba recargar la página.
