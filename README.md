@@ -50,10 +50,31 @@ Cada instancia de un componente tiene su propio estado independiente. Si renderi
 
 ---
 
+## ✏️ Reto Práctico: Tu Turno
+
+Pon a prueba tu comprensión de `useState` y los eventos agregando las siguientes funcionalidades:
+
+1. **Límite mínimo (No permitir números negativos):**
+   - Agrega una prop opcional `min = 0` al componente `Counter`.
+   - Modifica `handleDecrement` para que el contador no baje de ese número mínimo.
+   - **Extra:** Deshabilita el botón de restar (`disabled={count <= min}`) y dale un estilo opaco cuando esté deshabilitado.
+
+2. **Límite máximo:**
+   - Agrega una prop opcional `max = 50`.
+   - Si el contador alcanza el límite máximo, deshabilita el botón de sumar.
+
+3. **Crear un nuevo componente `TextInput.jsx` (Estado con strings):**
+   - Crea `src/components/TextInput.jsx` con un campo `<input type="text" />`.
+   - Usa un estado `const [text, setText] = useState('')`.
+   - Escucha el evento `onChange={(e) => setText(e.target.value)}`.
+   - Muestra en tiempo real debajo del input: *"Escribiste: {text}"* y la cantidad de caracteres: *"Total: {text.length} caracteres"*.
+
+---
+
 ## 🚀 Cómo ejecutar esta lección
 
 ```bash
 npm run dev
 ```
 
-Abre [http://localhost:5173](http://localhost:5173) e interactúa con los contadores.
+Abre [http://localhost:5173](http://localhost:5173) e interactúa con los componentes.
