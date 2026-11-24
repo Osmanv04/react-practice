@@ -1,100 +1,72 @@
-# ⚛️ Repositorio de Aprendizaje: React desde Cero (JS)
+# 📘 Lección 06: Listas y Keys Estables
 
-Este repositorio está estructurado para aprender React paso a paso mediante ramas (`branches`). La rama `main` contiene la configuración base del proyecto, las instrucciones de configuración y la guía de arquitectura y buenas prácticas. Cada rama posterior (`lesson/...`) contiene una lección práctica con ejemplos y código funcional.
+En esta lección aprenderás a renderizar colecciones dinámicas de datos con `.map()` y entenderás la importancia crítica del atributo especial **`key`** en el algoritmo de reconciliación de React.
 
 ---
 
-## 🛠️ Cómo se creó este proyecto
+## 🎯 Objetivos de Aprendizaje
 
-Este proyecto fue inicializado con **Vite** y la plantilla de **React con JavaScript**:
+1. Transformar arrays en elementos visuales utilizando `.map()`.
+2. Comprender cómo funciona la prop `key` en el Virtual DOM de React.
+3. Descubrir por qué el índice del array (`index`) como `key` es un **antipatrón** cuando la lista cambia dinámicamente.
+4. Implementar adición, eliminación y reordenamiento de elementos garantizando keys únicas y estables.
+
+---
+
+## 🧠 Conceptos Clave
+
+### 1. Renderizado de Colecciones con `.map()`
+En JSX no usamos bucles tradicionales como `for` o `while`. En su lugar, usamos métodos declarativos de arrays, principalmente `.map()`:
+
+```jsx
+const items = [{ id: 'a1', text: 'Aprender JSX' }, { id: 'b2', text: 'Dominar Hooks' }];
+
+return (
+  <ul>
+    {items.map((item) => (
+      <li key={item.id}>{item.text}</li>
+    ))}
+  </ul>
+);
+```
+
+### 2. ¿Para qué sirve la prop `key`?
+La prop `key` le da a cada elemento una **identidad persistente**. Le dice a React:
+*"Este es el elemento X, sin importar si ahora está al principio, al final o si borraron su vecino"*.
+
+### 3. ¿Por qué NO usar `key={index}`?
+Si usas el índice como clave:
+- Al agregar un elemento al inicio de la lista, todos los elementos siguientes cambian de índice (`0` pasa a ser `1`, `1` pasa a ser `2`).
+- React cree que todos los elementos cambiaron y puede reasignar estados internos (como texto escrito en inputs o animaciones) al elemento equivocado.
+- **Regla de oro:** Usa identificadores únicos (`id`, `uuid`, etc.) generados al crear el dato.
+
+---
+
+## 📂 Archivos de esta Lección
+
+- `src/components/TodoItem.jsx`: Elemento de la lista con estado propio (un input o checkbox) para evidenciar la estabilidad de la clave.
+- `src/components/TodoList.jsx`: Componente interactivo que permite agregar tareas al principio/final y eliminar elementos.
+- `src/App.jsx`: Demostración práctica y comparativa.
+
+---
+
+## ✏️ Reto Práctico: Tu Turno
+
+1. **Reordenar la Lista (Invertir orden):**
+   - Agrega un botón *"Invertir orden"* que aplique `[...todos].reverse()`.
+   - Observa cómo las notas o textos escritos en cada tarea se mantienen intactos con sus respectivas tareas gracias a `key={todo.id}`.
+
+2. **Filtro de Búsqueda en tiempo real:**
+   - Agrega un campo `<input placeholder="Buscar tarea..." />`.
+   - Filtra la lista con `.filter()` antes del `.map()`.
+   - Comprueba que la lista filtrada se renderice de forma fluida.
+
+---
+
+## 🚀 Cómo ejecutar esta lección
 
 ```bash
-# 1. Crear proyecto React (JavaScript) con Vite
-npm create vite@latest . -- --template react
-
-# 2. Inicializar repositorio Git
-git init
-git branch -M main
-
-# 3. Instalar dependencias
-npm install
-
-# 4. Iniciar servidor de desarrollo
 npm run dev
 ```
 
----
-
-## 🌿 Estructura de Ramas (Lecciones)
-
-Cada lección vive en su propia rama para aislar los conceptos:
-
-| Rama                                         | Descripción                       | Conceptos Clave                    |
-| :------------------------------------------- | :-------------------------------- | :--------------------------------- |
-| `main`                                       | Base del proyecto y documentación | Vite, setup, arquitectura          |
-| `lesson/01-componentes-y-jsx`                | Componentes y JSX                 | Funciones, JSX, Props, SRP         |
-| `lesson/02-gestion-de-estado-y-eventos`      | Estado y Eventos                  | `useState`, manejadores de eventos |
-| `lesson/03-composicion-vs-prop-drilling`     | Composición                       | `children`, evitar prop drilling   |
-| `lesson/04-custom-hooks`                     | Custom Hooks                      | Reutilización de lógica reactiva   |
-| `lesson/05-patron-contenedor-presentacional` | Patrón Contenedor/Presentacional  | Separación lógica vs interfaz      |
-| `lesson/06-listas-y-keys-estables`           | Renderizado de Listas             | `.map()`, keys únicas y estables   |
-
----
-
-## 🔄 Cómo navegar entre lecciones
-
-Para ver todas las lecciones disponibles:
-
-```bash
-git branch -a
-```
-
-Para cambiarte a una lección específica y explorarla:
-
-```bash
-git checkout lesson/01-componentes-y-jsx
-npm run dev
-```
-
-Para regresar a la rama principal:
-
-```bash
-git checkout main
-```
-
----
-
-## 📁 Arquitectura Recomendada por Funcionalidad (Features)
-
-Para proyectos escalables en React, se recomienda estructurar por **funcionalidades (features)** en lugar de agrupar sólo por tipo de archivo:
-
-```text
-src/
-├── assets/                  # Recursos estáticos globales (imágenes, SVGs)
-├── components/              # Componentes de UI genéricos (Button, Modal, Input)
-├── features/                # Módulos organizados por funcionalidad
-│   ├── auth/
-│   │   ├── components/      # LoginForm.jsx, UserMenu.jsx
-│   │   ├── hooks/           # useAuth.js
-│   │   └── api/             # authApi.js
-│   └── products/
-│       ├── components/      # ProductCard.jsx, ProductList.jsx
-│       ├── hooks/           # useProducts.js
-│       └── utils/           # formatPrice.js
-├── hooks/                   # Custom hooks globales reutilizables
-├── services/                # Clientes API y llamadas externas
-└── utils/                  # Funciones utilitarias globales
-```
-
----
-
-## 📐 Principios de Buenas Prácticas
-
-1. **Responsabilidad Única (SRP):** Cada componente debe hacer una sola cosa y hacerla bien. Si supera 100-150 líneas o mezcla demasiadas responsabilidades, divídelo.
-2. **Separación de Lógica y Presentación:**
-   - _Contenedor:_ Maneja el estado, llamadas a APIs y lógica de negocio.
-   - _Presentacional:_ Componentes puros enfocados solo en renderizar la UI a partir de props.
-3. **Custom Hooks:** Encapsula lógica con estado (`useState`, `useEffect`) en funciones reutilizables (`useFetch`, `useForm`).
-4. **Composición con `children`:** Evita pasar props por 5 niveles innecesarios usando la propiedad `children`.
-5. **Estado Local Cercano:** Mantén el estado en el componente más cercano que lo necesita, evitando estados globales prematuros.
-6. **Keys Únicas y Estables:** Al renderizar listas con `.map()`, usa siempre IDs únicos (`item.id`). Evita usar el índice (`index`) del array como key.
+Abre [http://localhost:5173](http://localhost:5173).
