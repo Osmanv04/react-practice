@@ -1,100 +1,79 @@
-# ⚛️ Repositorio de Aprendizaje: React desde Cero (JS)
+# 📘 Lección 03: Composición vs Prop Drilling
 
-Este repositorio está estructurado para aprender React paso a paso mediante ramas (`branches`). La rama `main` contiene la configuración base del proyecto, las instrucciones de configuración y la guía de arquitectura y buenas prácticas. Cada rama posterior (`lesson/...`) contiene una lección práctica con ejemplos y código funcional.
-
----
-
-## 🛠️ Cómo se creó este proyecto
-
-Este proyecto fue inicializado con **Vite** y la plantilla de **React con JavaScript**:
-
-```bash
-# 1. Crear proyecto React (JavaScript) con Vite
-npm create vite@latest . -- --template react
-
-# 2. Inicializar repositorio Git
-git init
-git branch -M main
-
-# 3. Instalar dependencias
-npm install
-
-# 4. Iniciar servidor de desarrollo
-npm run dev
-```
+En esta lección aprenderás a estructurar componentes escalables mediante **Composición** utilizando la prop especial `children`, resolviendo uno de los problemas más comunes en React: el **Prop Drilling**.
 
 ---
 
-## 🌿 Estructura de Ramas (Lecciones)
+## 🎯 Objetivos de Aprendizaje
 
-Cada lección vive en su propia rama para aislar los conceptos:
-
-| Rama                                         | Descripción                       | Conceptos Clave                    |
-| :------------------------------------------- | :-------------------------------- | :--------------------------------- |
-| `main`                                       | Base del proyecto y documentación | Vite, setup, arquitectura          |
-| `lesson/01-componentes-y-jsx`                | Componentes y JSX                 | Funciones, JSX, Props, SRP         |
-| `lesson/02-gestion-de-estado-y-eventos`      | Estado y Eventos                  | `useState`, manejadores de eventos |
-| `lesson/03-composicion-vs-prop-drilling`     | Composición                       | `children`, evitar prop drilling   |
-| `lesson/04-custom-hooks`                     | Custom Hooks                      | Reutilización de lógica reactiva   |
-| `lesson/05-patron-contenedor-presentacional` | Patrón Contenedor/Presentacional  | Separación lógica vs interfaz      |
-| `lesson/06-listas-y-keys-estables`           | Renderizado de Listas             | `.map()`, keys únicas y estables   |
+1. Identificar el antipatrón de **Prop Drilling** y por qué hace que el código sea frágil.
+2. Entender y utilizar la prop especial **`children`**.
+3. Aplicar el patrón de **Composición de Componentes** para crear layouts flexibles (Cards, Modals, Paneles).
+4. Practicar la técnica de pasar elementos JSX como props (*slots*).
 
 ---
 
-## 🔄 Cómo navegar entre lecciones
+## 🧠 Conceptos Clave
 
-Para ver todas las lecciones disponibles:
-
-```bash
-git branch -a
-```
-
-Para cambiarte a una lección específica y explorarla:
-
-```bash
-git checkout lesson/01-componentes-y-jsx
-npm run dev
-```
-
-Para regresar a la rama principal:
-
-```bash
-git checkout main
-```
-
----
-
-## 📁 Arquitectura Recomendada por Funcionalidad (Features)
-
-Para proyectos escalables en React, se recomienda estructurar por **funcionalidades (features)** en lugar de agrupar sólo por tipo de archivo:
-
+### 1. El Problema: Prop Drilling
+Imagina este escenario:
 ```text
-src/
-├── assets/                  # Recursos estáticos globales (imágenes, SVGs)
-├── components/              # Componentes de UI genéricos (Button, Modal, Input)
-├── features/                # Módulos organizados por funcionalidad
-│   ├── auth/
-│   │   ├── components/      # LoginForm.jsx, UserMenu.jsx
-│   │   ├── hooks/           # useAuth.js
-│   │   └── api/             # authApi.js
-│   └── products/
-│       ├── components/      # ProductCard.jsx, ProductList.jsx
-│       ├── hooks/           # useProducts.js
-│       └── utils/           # formatPrice.js
-├── hooks/                   # Custom hooks globales reutilizables
-├── services/                # Clientes API y llamadas externas
-└── utils/                  # Funciones utilitarias globales
+App (tiene el dato 'theme' o 'user')
+ └── Layout (no necesita 'user', pero debe pasarlo)
+      └── Sidebar (no necesita 'user', pero debe pasarlo)
+           └── UserBadge (¡es el único que realmente necesita 'user'!)
 ```
+Cada vez que cambias cómo `UserBadge` consume los datos, debes modificar `Sidebar` y `Layout`, volviendo los componentes intermedios rígidos y acoplados.
+
+### 2. La Solución: Composición con `children`
+React proporciona la prop `children` para renderizar cualquier contenido que se coloque entre las etiquetas de apertura y cierre de un componente:
+
+```jsx
+// Componente contenedor reutilizable
+export function Card({ title, children }) {
+  return (
+    <div className="card">
+      <h2>{title}</h2>
+      <div className="card-body">{children}</div>
+    </div>
+  );
+}
+
+// Uso flexible desde el padre:
+<Card title="Mi Cuenta">
+  <UserProfile user={user} />
+</Card>
+```
+¡Ahora el contenedor no tiene idea de qué es `user`! Solo se encarga del envoltorio, layout y estilo.
 
 ---
 
-## 📐 Principios de Buenas Prácticas
+## 📂 Archivos de esta Lección
 
-1. **Responsabilidad Única (SRP):** Cada componente debe hacer una sola cosa y hacerla bien. Si supera 100-150 líneas o mezcla demasiadas responsabilidades, divídelo.
-2. **Separación de Lógica y Presentación:**
-   - _Contenedor:_ Maneja el estado, llamadas a APIs y lógica de negocio.
-   - _Presentacional:_ Componentes puros enfocados solo en renderizar la UI a partir de props.
-3. **Custom Hooks:** Encapsula lógica con estado (`useState`, `useEffect`) en funciones reutilizables (`useFetch`, `useForm`).
-4. **Composición con `children`:** Evita pasar props por 5 niveles innecesarios usando la propiedad `children`.
-5. **Estado Local Cercano:** Mantén el estado en el componente más cercano que lo necesita, evitando estados globales prematuros.
-6. **Keys Únicas y Estables:** Al renderizar listas con `.map()`, usa siempre IDs únicos (`item.id`). Evita usar el índice (`index`) del array como key.
+- `src/components/Card.jsx`: Contenedor genérico que utiliza `children` y estilos de contenedor.
+- `src/components/Modal.jsx`: Componente modal/diálogo compuesto que demuestra `children` y acciones flexibles.
+- `src/App.jsx`: Comparativa práctica de composición para resolver prop drilling.
+
+---
+
+## ✏️ Reto Práctico: Tu Turno
+
+1. **Crear un componente `CollapsibleCard.jsx`:**
+   - Debe usar `children` para su contenido.
+   - Debe tener un estado local `isOpen` (`useState(true)`).
+   - Un botón en la cabecera que diga *"Ocultar"* o *"Mostrar"*.
+   - Si `isOpen` es `false`, oculta el `children`.
+
+2. **Agregar una prop de Slot (Acción personalizada):**
+   - Agrega al componente `Card` una prop opcional `headerAction` (que puede recibir cualquier JSX, como un `<button>Editar</button>`).
+   - Renderízala a la derecha del título si está presente.
+
+---
+
+## 🚀 Cómo ejecutar esta lección
+
+```bash
+npm run dev
+```
+
+Abre [http://localhost:5173](http://localhost:5173).
