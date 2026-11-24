@@ -1,100 +1,60 @@
-# ⚛️ Repositorio de Aprendizaje: React desde Cero (JS)
+# 📘 Lección 01: Componentes, JSX y Props
 
-Este repositorio está estructurado para aprender React paso a paso mediante ramas (`branches`). La rama `main` contiene la configuración base del proyecto, las instrucciones de configuración y la guía de arquitectura y buenas prácticas. Cada rama posterior (`lesson/...`) contiene una lección práctica con ejemplos y código funcional.
+En esta primera lección aprenderás los bloques fundamentales sobre los cuales se construye cualquier aplicación en React: **Componentes**, **JSX** y **Props**.
 
 ---
 
-## 🛠️ Cómo se creó este proyecto
+## 🎯 Objetivos de Aprendizaje
 
-Este proyecto fue inicializado con **Vite** y la plantilla de **React con JavaScript**:
+1. Entender qué es un componente funcional en React.
+2. Comprender la sintaxis JSX y sus diferencias clave con HTML.
+3. Comunicar componentes enviando datos mediante **Props** (Propiedades).
+4. Aplicar el **Principio de Responsabilidad Única (SRP)** en la interfaz de usuario.
+
+---
+
+## 🧠 Conceptos Clave
+
+### 1. ¿Qué es un Componente?
+En el React moderno, un componente es simplemente una **función de JavaScript** que retorna JSX. Los componentes permiten dividir la interfaz de usuario en piezas independientes, reutilizables y aisladas.
+
+```jsx
+export function UserProfile({ name, role, avatarUrl }) {
+  return (
+    <div className="card">
+      <img src={avatarUrl} alt={name} />
+      <h3>{name}</h3>
+      <p>{role}</p>
+    </div>
+  );
+}
+```
+
+### 2. ¿Qué es JSX?
+JSX significa *JavaScript XML*. Es una extensión de la sintaxis de JavaScript que permite escribir estructuras que parecen HTML directamente dentro del código JS:
+- **Expresiones dinámicas:** Se evalúan dentro de llaves `{}` (variables, funciones, operaciones ternarias).
+- **Atributos:** En lugar de `class` se usa `className`, en lugar de `for` se usa `htmlFor`.
+- **Raíz única:** Cada componente debe retornar un único elemento padre o un Fragmento vacío (`<> ... </>`).
+
+### 3. ¿Qué son las Props?
+Las *props* (propiedades) son los argumentos que le pasas a un componente. Son **de solo lectura (inmutables)**. Un componente hijo nunca debe modificar sus propias props; si necesita que los datos cambien con el tiempo, usará **estado** (Lección 2).
+
+### 4. Principio de Responsabilidad Única (SRP)
+Un componente debe encargarse de una única responsabilidad visual o lógica. Si un componente muestra el perfil, la lista de amigos y el carrito de compras a la vez, debe dividirse en componentes más pequeños.
+
+---
+
+## 📂 Archivos de esta Lección
+
+- `src/components/UserProfile.jsx`: Componente presentacional puro con responsabilidad única que recibe `name`, `role` y `avatarUrl`.
+- `src/App.jsx`: Componente contenedor que demuestra la reutilización de `UserProfile` con distintas props.
+
+---
+
+## 🚀 Cómo ejecutar esta lección
 
 ```bash
-# 1. Crear proyecto React (JavaScript) con Vite
-npm create vite@latest . -- --template react
-
-# 2. Inicializar repositorio Git
-git init
-git branch -M main
-
-# 3. Instalar dependencias
-npm install
-
-# 4. Iniciar servidor de desarrollo
 npm run dev
 ```
 
----
-
-## 🌿 Estructura de Ramas (Lecciones)
-
-Cada lección vive en su propia rama para aislar los conceptos:
-
-| Rama                                         | Descripción                       | Conceptos Clave                    |
-| :------------------------------------------- | :-------------------------------- | :--------------------------------- |
-| `main`                                       | Base del proyecto y documentación | Vite, setup, arquitectura          |
-| `lesson/01-componentes-y-jsx`                | Componentes y JSX                 | Funciones, JSX, Props, SRP         |
-| `lesson/02-gestion-de-estado-y-eventos`      | Estado y Eventos                  | `useState`, manejadores de eventos |
-| `lesson/03-composicion-vs-prop-drilling`     | Composición                       | `children`, evitar prop drilling   |
-| `lesson/04-custom-hooks`                     | Custom Hooks                      | Reutilización de lógica reactiva   |
-| `lesson/05-patron-contenedor-presentacional` | Patrón Contenedor/Presentacional  | Separación lógica vs interfaz      |
-| `lesson/06-listas-y-keys-estables`           | Renderizado de Listas             | `.map()`, keys únicas y estables   |
-
----
-
-## 🔄 Cómo navegar entre lecciones
-
-Para ver todas las lecciones disponibles:
-
-```bash
-git branch -a
-```
-
-Para cambiarte a una lección específica y explorarla:
-
-```bash
-git checkout lesson/01-componentes-y-jsx
-npm run dev
-```
-
-Para regresar a la rama principal:
-
-```bash
-git checkout main
-```
-
----
-
-## 📁 Arquitectura Recomendada por Funcionalidad (Features)
-
-Para proyectos escalables en React, se recomienda estructurar por **funcionalidades (features)** en lugar de agrupar sólo por tipo de archivo:
-
-```text
-src/
-├── assets/                  # Recursos estáticos globales (imágenes, SVGs)
-├── components/              # Componentes de UI genéricos (Button, Modal, Input)
-├── features/                # Módulos organizados por funcionalidad
-│   ├── auth/
-│   │   ├── components/      # LoginForm.jsx, UserMenu.jsx
-│   │   ├── hooks/           # useAuth.js
-│   │   └── api/             # authApi.js
-│   └── products/
-│       ├── components/      # ProductCard.jsx, ProductList.jsx
-│       ├── hooks/           # useProducts.js
-│       └── utils/           # formatPrice.js
-├── hooks/                   # Custom hooks globales reutilizables
-├── services/                # Clientes API y llamadas externas
-└── utils/                  # Funciones utilitarias globales
-```
-
----
-
-## 📐 Principios de Buenas Prácticas
-
-1. **Responsabilidad Única (SRP):** Cada componente debe hacer una sola cosa y hacerla bien. Si supera 100-150 líneas o mezcla demasiadas responsabilidades, divídelo.
-2. **Separación de Lógica y Presentación:**
-   - _Contenedor:_ Maneja el estado, llamadas a APIs y lógica de negocio.
-   - _Presentacional:_ Componentes puros enfocados solo en renderizar la UI a partir de props.
-3. **Custom Hooks:** Encapsula lógica con estado (`useState`, `useEffect`) en funciones reutilizables (`useFetch`, `useForm`).
-4. **Composición con `children`:** Evita pasar props por 5 niveles innecesarios usando la propiedad `children`.
-5. **Estado Local Cercano:** Mantén el estado en el componente más cercano que lo necesita, evitando estados globales prematuros.
-6. **Keys Únicas y Estables:** Al renderizar listas con `.map()`, usa siempre IDs únicos (`item.id`). Evita usar el índice (`index`) del array como key.
+Abre tu navegador en [http://localhost:5173](http://localhost:5173).
