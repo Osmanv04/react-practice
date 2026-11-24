@@ -1,100 +1,59 @@
-# ⚛️ Repositorio de Aprendizaje: React desde Cero (JS)
+# 📘 Lección 02: Gestión de Estado y Manejo de Eventos
 
-Este repositorio está estructurado para aprender React paso a paso mediante ramas (`branches`). La rama `main` contiene la configuración base del proyecto, las instrucciones de configuración y la guía de arquitectura y buenas prácticas. Cada rama posterior (`lesson/...`) contiene una lección práctica con ejemplos y código funcional.
+En esta lección aprenderás cómo hacer que una aplicación de React sea interactiva utilizando el hook fundamental **`useState`** y los manejadores de eventos.
 
 ---
 
-## 🛠️ Cómo se creó este proyecto
+## 🎯 Objetivos de Aprendizaje
 
-Este proyecto fue inicializado con **Vite** y la plantilla de **React con JavaScript**:
+1. Entender qué es el **Estado** en React y cómo se diferencia de las **Props**.
+2. Usar el hook `useState` para declarar variables de estado reactivas.
+3. Comprender el principio de **Inmutabilidad** y por qué nunca debemos modificar el estado directamente.
+4. Conectar eventos del usuario (`onClick`, etc.) con funciones manejadoras (*event handlers*).
+5. Utilizar la forma de actualización funcional `setState(prev => prev + 1)` para evitar condiciones de carrera.
+
+---
+
+## 🧠 Conceptos Clave
+
+### 1. ¿Qué es el Estado (`useState`)?
+Mientras que las props son datos que un componente *recibe desde fuera* (de solo lectura), el **estado** es la memoria interna de un componente. Cuando el estado cambia mediante su función actualizadora, React programa un **re-renderizado** automático para actualizar la interfaz.
+
+```jsx
+const [count, setCount] = useState(0);
+```
+- `count`: El valor actual del estado.
+- `setCount`: La función para actualizar el valor.
+- `0`: El valor inicial.
+
+### 2. Inmutabilidad: Nunca mutes el estado
+En React el estado debe tratarse como inmutable:
+- ❌ **Incorrecto:** `count = count + 1;` (React no se enterará del cambio y no re-renderizará la UI).
+- ✅ **Correcto:** `setCount(count + 1);` o `setCount(prev => prev + 1);`
+
+### 3. Actualización Funcional
+Cuando el nuevo valor del estado depende directamente del valor anterior, se recomienda pasar una función a `setCount`:
+```jsx
+// Garantiza que siempre trabajamos con el estado más reciente, incluso en actualizaciones rápidas
+setCount((prev) => prev + 1);
+```
+
+### 4. Aislamiento del Estado
+Cada instancia de un componente tiene su propio estado independiente. Si renderizas `<Counter />` tres veces, cada uno tendrá su propio conteo sin interferir con los demás.
+
+---
+
+## 📂 Archivos de esta Lección
+
+- `src/components/Counter.jsx`: Componente interactivo que implementa `useState`, botones de incremento, decremento y reinicio.
+- `src/App.jsx`: Componente principal que demuestra cómo dos contadores mantienen estados completamente aislados.
+
+---
+
+## 🚀 Cómo ejecutar esta lección
 
 ```bash
-# 1. Crear proyecto React (JavaScript) con Vite
-npm create vite@latest . -- --template react
-
-# 2. Inicializar repositorio Git
-git init
-git branch -M main
-
-# 3. Instalar dependencias
-npm install
-
-# 4. Iniciar servidor de desarrollo
 npm run dev
 ```
 
----
-
-## 🌿 Estructura de Ramas (Lecciones)
-
-Cada lección vive en su propia rama para aislar los conceptos:
-
-| Rama                                         | Descripción                       | Conceptos Clave                    |
-| :------------------------------------------- | :-------------------------------- | :--------------------------------- |
-| `main`                                       | Base del proyecto y documentación | Vite, setup, arquitectura          |
-| `lesson/01-componentes-y-jsx`                | Componentes y JSX                 | Funciones, JSX, Props, SRP         |
-| `lesson/02-gestion-de-estado-y-eventos`      | Estado y Eventos                  | `useState`, manejadores de eventos |
-| `lesson/03-composicion-vs-prop-drilling`     | Composición                       | `children`, evitar prop drilling   |
-| `lesson/04-custom-hooks`                     | Custom Hooks                      | Reutilización de lógica reactiva   |
-| `lesson/05-patron-contenedor-presentacional` | Patrón Contenedor/Presentacional  | Separación lógica vs interfaz      |
-| `lesson/06-listas-y-keys-estables`           | Renderizado de Listas             | `.map()`, keys únicas y estables   |
-
----
-
-## 🔄 Cómo navegar entre lecciones
-
-Para ver todas las lecciones disponibles:
-
-```bash
-git branch -a
-```
-
-Para cambiarte a una lección específica y explorarla:
-
-```bash
-git checkout lesson/01-componentes-y-jsx
-npm run dev
-```
-
-Para regresar a la rama principal:
-
-```bash
-git checkout main
-```
-
----
-
-## 📁 Arquitectura Recomendada por Funcionalidad (Features)
-
-Para proyectos escalables en React, se recomienda estructurar por **funcionalidades (features)** en lugar de agrupar sólo por tipo de archivo:
-
-```text
-src/
-├── assets/                  # Recursos estáticos globales (imágenes, SVGs)
-├── components/              # Componentes de UI genéricos (Button, Modal, Input)
-├── features/                # Módulos organizados por funcionalidad
-│   ├── auth/
-│   │   ├── components/      # LoginForm.jsx, UserMenu.jsx
-│   │   ├── hooks/           # useAuth.js
-│   │   └── api/             # authApi.js
-│   └── products/
-│       ├── components/      # ProductCard.jsx, ProductList.jsx
-│       ├── hooks/           # useProducts.js
-│       └── utils/           # formatPrice.js
-├── hooks/                   # Custom hooks globales reutilizables
-├── services/                # Clientes API y llamadas externas
-└── utils/                  # Funciones utilitarias globales
-```
-
----
-
-## 📐 Principios de Buenas Prácticas
-
-1. **Responsabilidad Única (SRP):** Cada componente debe hacer una sola cosa y hacerla bien. Si supera 100-150 líneas o mezcla demasiadas responsabilidades, divídelo.
-2. **Separación de Lógica y Presentación:**
-   - _Contenedor:_ Maneja el estado, llamadas a APIs y lógica de negocio.
-   - _Presentacional:_ Componentes puros enfocados solo en renderizar la UI a partir de props.
-3. **Custom Hooks:** Encapsula lógica con estado (`useState`, `useEffect`) en funciones reutilizables (`useFetch`, `useForm`).
-4. **Composición con `children`:** Evita pasar props por 5 niveles innecesarios usando la propiedad `children`.
-5. **Estado Local Cercano:** Mantén el estado en el componente más cercano que lo necesita, evitando estados globales prematuros.
-6. **Keys Únicas y Estables:** Al renderizar listas con `.map()`, usa siempre IDs únicos (`item.id`). Evita usar el índice (`index`) del array como key.
+Abre [http://localhost:5173](http://localhost:5173) e interactúa con los contadores.
