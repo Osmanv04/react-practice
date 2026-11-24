@@ -51,6 +51,22 @@ Un componente debe encargarse de una única responsabilidad visual o lógica. Si
 
 ---
 
+## ✏️ Reto Práctico: Tu Turno
+
+Para poner en práctica lo aprendido, realiza las siguientes mejoras:
+
+1. **Agregar una nueva prop opcional llamada `bio`:**
+   - Modifica `src/components/UserProfile.jsx` para que reciba una prop `bio` (biografía o descripción corta).
+   - Renderízala debajo del rol dentro de un elemento `<p>`, pero **solo si existe** (renderizado condicional con `{bio && <p style={styles.bio}>{bio}</p>}`).
+
+2. **Agregar una prop booleana `isOnline`:**
+   - Si `isOnline` es `true`, muestra una pequeña etiqueta o indicador visual que diga *"🟢 En línea"*; si es `false` o no se proporciona, que diga *"⚪ Desconectado"*.
+
+3. **Probar el componente en `src/App.jsx`:**
+   - Pásale las nuevas props `bio` e `isOnline` a los perfiles existentes para ver los cambios reflejados en pantalla.
+
+---
+
 ## 🚀 Cómo ejecutar esta lección
 
 ```bash
