@@ -1,102 +1,87 @@
-import { useState } from 'react';
-import heroImg from './assets/hero.png';
-import reactLogo from './assets/react.svg';
-import viteLogo from './assets/vite.svg';
+import { useCounter } from './hooks/useCounter';
+import { useWindowSize } from './hooks/useWindowsSize';
 import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0);
+  // Consumiendo el hook useCounter con límites configurados
+  const { count, increment, decrement, reset, isAtMin, isAtMax } = useCounter({
+    initial: 5,
+    step: 1,
+    min: 0,
+    max: 10,
+  });
+
+  // Consumiendo el hook useWindowSize que reacciona al tamaño de pantalla
+  const { width, height } = useWindowSize();
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+    <main style={{ padding: '24px', textAlign: 'center' }}>
+      <h1>Lección 04: Custom Hooks</h1>
+      <p style={{ color: '#888', marginBottom: '24px' }}>
+        Extrae y reutiliza lógica con estado sin duplicar código en tus componentes.
+      </p>
+
+      {/* Demostración de useCounter */}
+      <section style={cardStyle}>
+        <h3>useCounter (Min: 0, Max: 10)</h3>
+        <p style={{ fontSize: '2.5rem', fontWeight: 'bold', color: '#38bdf8', margin: '12px 0' }}>
+          {count}
+        </p>
+        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center' }}>
+          <button style={buttonStyle} onClick={decrement} disabled={isAtMin}>
+            -1
+          </button>
+          <button
+            style={{ ...buttonStyle, backgroundColor: '#6b7280' }}
+            onClick={reset}
+          >
+            Reset
+          </button>
+          <button style={buttonStyle} onClick={increment} disabled={isAtMax}>
+            +1
+          </button>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button type="button" className="counter" onClick={() => setCount((count) => count + 1)}>
-          Count is {count}
-        </button>
+        {(isAtMin || isAtMax) && (
+          <small style={{ color: '#f87171', display: 'block', marginTop: '8px' }}>
+            {isAtMin ? 'Límite mínimo alcanzado' : 'Límite máximo alcanzado'}
+          </small>
+        )}
       </section>
 
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg className="button-icon" role="presentation" aria-hidden="true">
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
+      {/* Demostración de useWindowSize */}
+      <section style={cardStyle}>
+        <h3>useWindowSize</h3>
+        <p style={{ color: '#9ca3af', margin: '8px 0' }}>
+          Cambia el tamaño de la ventana de tu navegador para ver la actualización en vivo:
+        </p>
+        <p style={{ fontSize: '1.2rem', fontFamily: 'monospace', color: '#10b981' }}>
+          Ancho: <strong>{width}px</strong> | Alto: <strong>{height}px</strong>
+        </p>
+        <span style={{ fontSize: '0.85rem', color: '#9ca3af' }}>
+          {width < 768 ? '📱 Vista Móvil' : '💻 Vista de Escritorio'}
+        </span>
       </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+    </main>
   );
 }
+
+const cardStyle = {
+  backgroundColor: '#1f2937',
+  border: '1px solid #374151',
+  borderRadius: '12px',
+  padding: '20px',
+  maxWidth: '420px',
+  margin: '16px auto',
+  color: '#f9fafb',
+};
+
+const buttonStyle = {
+  backgroundColor: '#2563eb',
+  color: '#fff',
+  border: 'none',
+  padding: '8px 16px',
+  borderRadius: '6px',
+  cursor: 'pointer',
+};
 
 export default App;

@@ -1,100 +1,69 @@
-# ⚛️ Repositorio de Aprendizaje: React desde Cero (JS)
+# 📘 Lección 04: Custom Hooks
 
-Este repositorio está estructurado para aprender React paso a paso mediante ramas (`branches`). La rama `main` contiene la configuración base del proyecto, las instrucciones de configuración y la guía de arquitectura y buenas prácticas. Cada rama posterior (`lesson/...`) contiene una lección práctica con ejemplos y código funcional.
+En esta lección aprenderás cómo extraer lógica reactiva reutilizable fuera de los componentes mediante **Custom Hooks**, mejorando la separación de responsabilidades y facilitando el mantenimiento y pruebas de tu código.
 
 ---
 
-## 🛠️ Cómo se creó este proyecto
+## 🎯 Objetivos de Aprendizaje
 
-Este proyecto fue inicializado con **Vite** y la plantilla de **React con JavaScript**:
+1. Entender qué es un Custom Hook y por qué debe comenzar con el prefijo `use`.
+2. Seguir las **Reglas de los Hooks** (no llamar hooks dentro de bucles, condicionales o funciones anidadas).
+3. Encapsular lógica de estado y efectos (`useState`, `useEffect`) en un módulo independiente.
+4. Crear hooks reutilizables para casos del mundo real:
+   - `useCounter`: Manejo avanzado de contadores con límites.
+   - `useWindowSize`: Detección en tiempo real del tamaño de la ventana y eventos del navegador.
+
+---
+
+## 🧠 Conceptos Clave
+
+### 1. ¿Por qué crear Custom Hooks?
+Cuando dos o más componentes necesitan la misma lógica de estado (por ejemplo, validar un formulario, hacer llamadas a una API o escuchar eventos del navegador), duplicar `useState` y `useEffect` en cada uno ensucia el código.
+
+Un Custom Hook permite empaquetar esa lógica:
+```jsx
+// src/hooks/useToggle.js
+import { useState } from 'react';
+
+export function useToggle(initialValue = false) {
+  const [value, setValue] = useState(initialValue);
+  const toggle = () => setValue((prev) => !prev);
+  return [value, toggle];
+}
+```
+
+### 2. Reglas de los Hooks
+1. **Solo llámalos en el nivel superior**: No los uses dentro de `if`, bucles `for`, o funciones internas.
+2. **Solo llámalos desde componentes funcionales de React o desde otros Custom Hooks**.
+3. **Convención de nomenclatura**: Su nombre siempre debe comenzar con `use` (ej: `useFetch`, `useAuth`). React usa esta convención para aplicar validaciones de linter automáticas.
+
+---
+
+## 📂 Archivos de esta Lección
+
+- `src/hooks/useCounter.js`: Hook para gestionar estado numérico con límites mínimos y máximos.
+- `src/hooks/useWindowSize.js`: Hook con `useEffect` que escucha el evento `resize` de la ventana.
+- `src/App.jsx`: Componente que consume ambos custom hooks y muestra su uso práctico.
+
+---
+
+## ✏️ Reto Práctico: Tu Turno
+
+1. **Crear el hook `useToggle.js`:**
+   - Crea `src/hooks/useToggle.js` que reciba un valor inicial booleano (`false` por defecto).
+   - Debe retornar el estado actual y funciones para: `toggle`, `setTrue` y `setFalse`.
+   - Úsalo en `App.jsx` para mostrar/ocultar un panel informativo.
+
+2. **Crear el hook `useLocalStorage.js` (Nivel Intermedio):**
+   - Crea un hook que sincronice una variable de estado con `window.localStorage`.
+   - Al cambiar el estado, debe actualizarse en el almacenamiento del navegador para persistir al recargar la página.
+
+---
+
+## 🚀 Cómo ejecutar esta lección
 
 ```bash
-# 1. Crear proyecto React (JavaScript) con Vite
-npm create vite@latest . -- --template react
-
-# 2. Inicializar repositorio Git
-git init
-git branch -M main
-
-# 3. Instalar dependencias
-npm install
-
-# 4. Iniciar servidor de desarrollo
 npm run dev
 ```
 
----
-
-## 🌿 Estructura de Ramas (Lecciones)
-
-Cada lección vive en su propia rama para aislar los conceptos:
-
-| Rama                                         | Descripción                       | Conceptos Clave                    |
-| :------------------------------------------- | :-------------------------------- | :--------------------------------- |
-| `main`                                       | Base del proyecto y documentación | Vite, setup, arquitectura          |
-| `lesson/01-componentes-y-jsx`                | Componentes y JSX                 | Funciones, JSX, Props, SRP         |
-| `lesson/02-gestion-de-estado-y-eventos`      | Estado y Eventos                  | `useState`, manejadores de eventos |
-| `lesson/03-composicion-vs-prop-drilling`     | Composición                       | `children`, evitar prop drilling   |
-| `lesson/04-custom-hooks`                     | Custom Hooks                      | Reutilización de lógica reactiva   |
-| `lesson/05-patron-contenedor-presentacional` | Patrón Contenedor/Presentacional  | Separación lógica vs interfaz      |
-| `lesson/06-listas-y-keys-estables`           | Renderizado de Listas             | `.map()`, keys únicas y estables   |
-
----
-
-## 🔄 Cómo navegar entre lecciones
-
-Para ver todas las lecciones disponibles:
-
-```bash
-git branch -a
-```
-
-Para cambiarte a una lección específica y explorarla:
-
-```bash
-git checkout lesson/01-componentes-y-jsx
-npm run dev
-```
-
-Para regresar a la rama principal:
-
-```bash
-git checkout main
-```
-
----
-
-## 📁 Arquitectura Recomendada por Funcionalidad (Features)
-
-Para proyectos escalables en React, se recomienda estructurar por **funcionalidades (features)** en lugar de agrupar sólo por tipo de archivo:
-
-```text
-src/
-├── assets/                  # Recursos estáticos globales (imágenes, SVGs)
-├── components/              # Componentes de UI genéricos (Button, Modal, Input)
-├── features/                # Módulos organizados por funcionalidad
-│   ├── auth/
-│   │   ├── components/      # LoginForm.jsx, UserMenu.jsx
-│   │   ├── hooks/           # useAuth.js
-│   │   └── api/             # authApi.js
-│   └── products/
-│       ├── components/      # ProductCard.jsx, ProductList.jsx
-│       ├── hooks/           # useProducts.js
-│       └── utils/           # formatPrice.js
-├── hooks/                   # Custom hooks globales reutilizables
-├── services/                # Clientes API y llamadas externas
-└── utils/                  # Funciones utilitarias globales
-```
-
----
-
-## 📐 Principios de Buenas Prácticas
-
-1. **Responsabilidad Única (SRP):** Cada componente debe hacer una sola cosa y hacerla bien. Si supera 100-150 líneas o mezcla demasiadas responsabilidades, divídelo.
-2. **Separación de Lógica y Presentación:**
-   - _Contenedor:_ Maneja el estado, llamadas a APIs y lógica de negocio.
-   - _Presentacional:_ Componentes puros enfocados solo en renderizar la UI a partir de props.
-3. **Custom Hooks:** Encapsula lógica con estado (`useState`, `useEffect`) en funciones reutilizables (`useFetch`, `useForm`).
-4. **Composición con `children`:** Evita pasar props por 5 niveles innecesarios usando la propiedad `children`.
-5. **Estado Local Cercano:** Mantén el estado en el componente más cercano que lo necesita, evitando estados globales prematuros.
-6. **Keys Únicas y Estables:** Al renderizar listas con `.map()`, usa siempre IDs únicos (`item.id`). Evita usar el índice (`index`) del array como key.
+Abre [http://localhost:5173](http://localhost:5173) y prueba redimensionar la ventana de tu navegador para ver la reactividad del hook.
