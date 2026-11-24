@@ -1,100 +1,64 @@
-# ⚛️ Repositorio de Aprendizaje: React desde Cero (JS)
+# 📘 Lección 05: Patrón Contenedor y Presentacional
 
-Este repositorio está estructurado para aprender React paso a paso mediante ramas (`branches`). La rama `main` contiene la configuración base del proyecto, las instrucciones de configuración y la guía de arquitectura y buenas prácticas. Cada rama posterior (`lesson/...`) contiene una lección práctica con ejemplos y código funcional.
-
----
-
-## 🛠️ Cómo se creó este proyecto
-
-Este proyecto fue inicializado con **Vite** y la plantilla de **React con JavaScript**:
-
-```bash
-# 1. Crear proyecto React (JavaScript) con Vite
-npm create vite@latest . -- --template react
-
-# 2. Inicializar repositorio Git
-git init
-git branch -M main
-
-# 3. Instalar dependencias
-npm install
-
-# 4. Iniciar servidor de desarrollo
-npm run dev
-```
+En esta lección aprenderás uno de los patrones de diseño arquitectónico más utilizados y recomendados en React: la separación estricta entre **Componentes Contenedores** (lógica y datos) y **Componentes Presentacionales** (renderizado de interfaz).
 
 ---
 
-## 🌿 Estructura de Ramas (Lecciones)
+## 🎯 Objetivos de Aprendizaje
 
-Cada lección vive en su propia rama para aislar los conceptos:
-
-| Rama                                         | Descripción                       | Conceptos Clave                    |
-| :------------------------------------------- | :-------------------------------- | :--------------------------------- |
-| `main`                                       | Base del proyecto y documentación | Vite, setup, arquitectura          |
-| `lesson/01-componentes-y-jsx`                | Componentes y JSX                 | Funciones, JSX, Props, SRP         |
-| `lesson/02-gestion-de-estado-y-eventos`      | Estado y Eventos                  | `useState`, manejadores de eventos |
-| `lesson/03-composicion-vs-prop-drilling`     | Composición                       | `children`, evitar prop drilling   |
-| `lesson/04-custom-hooks`                     | Custom Hooks                      | Reutilización de lógica reactiva   |
-| `lesson/05-patron-contenedor-presentacional` | Patrón Contenedor/Presentacional  | Separación lógica vs interfaz      |
-| `lesson/06-listas-y-keys-estables`           | Renderizado de Listas             | `.map()`, keys únicas y estables   |
+1. Entender la diferencia entre componentes "inteligentes" (*smart/containers*) y componentes "tontos" (*dumb/presentational*).
+2. Manejar estados asíncronos completos: `loading`, `error` y `data`.
+3. Crear componentes puramente presentacionales que se puedan probar y reutilizar en cualquier parte con simples `props`.
+4. Mejorar la mantenibilidad desacoplando el origen de los datos de su representación visual.
 
 ---
 
-## 🔄 Cómo navegar entre lecciones
+## 🧠 Conceptos Clave
 
-Para ver todas las lecciones disponibles:
+| Característica | Componente Presentacional | Componente Contenedor |
+| :--- | :--- | :--- |
+| **Propósito** | Cómo se ve la UI | Cómo funciona la aplicación |
+| **Sabe de Redux/APIs** | No | Sí (hace fetch, usa custom hooks, etc.) |
+| **Lee datos de** | `props` exclusivamente | Estado local, APIs, Context o Redux |
+| **Cambia datos con** | Invoca callbacks recibidos en `props` | Dispara acciones, ejecuta `setState` |
+| **Estilos CSS** | Sí (diseño, layout, colores) | Mínimo o ninguno (solo estructura) |
 
-```bash
-git branch -a
-```
-
-Para cambiarte a una lección específica y explorarla:
-
-```bash
-git checkout lesson/01-componentes-y-jsx
-npm run dev
-```
-
-Para regresar a la rama principal:
-
-```bash
-git checkout main
-```
-
----
-
-## 📁 Arquitectura Recomendada por Funcionalidad (Features)
-
-Para proyectos escalables en React, se recomienda estructurar por **funcionalidades (features)** en lugar de agrupar sólo por tipo de archivo:
-
+### Ejemplo del Flujo:
 ```text
-src/
-├── assets/                  # Recursos estáticos globales (imágenes, SVGs)
-├── components/              # Componentes de UI genéricos (Button, Modal, Input)
-├── features/                # Módulos organizados por funcionalidad
-│   ├── auth/
-│   │   ├── components/      # LoginForm.jsx, UserMenu.jsx
-│   │   ├── hooks/           # useAuth.js
-│   │   └── api/             # authApi.js
-│   └── products/
-│       ├── components/      # ProductCard.jsx, ProductList.jsx
-│       ├── hooks/           # useProducts.js
-│       └── utils/           # formatPrice.js
-├── hooks/                   # Custom hooks globales reutilizables
-├── services/                # Clientes API y llamadas externas
-└── utils/                  # Funciones utilitarias globales
+[ UsersContainer ] (Maneja: isLoading, users, error, fetch)
+         │
+         ├── Si isLoading: <Spinner />
+         ├── Si error:     <ErrorMessage message={error} />
+         └── Si éxito:     <UserList users={users} onSelectUser={...} />
 ```
 
 ---
 
-## 📐 Principios de Buenas Prácticas
+## 📂 Archivos de esta Lección
 
-1. **Responsabilidad Única (SRP):** Cada componente debe hacer una sola cosa y hacerla bien. Si supera 100-150 líneas o mezcla demasiadas responsabilidades, divídelo.
-2. **Separación de Lógica y Presentación:**
-   - _Contenedor:_ Maneja el estado, llamadas a APIs y lógica de negocio.
-   - _Presentacional:_ Componentes puros enfocados solo en renderizar la UI a partir de props.
-3. **Custom Hooks:** Encapsula lógica con estado (`useState`, `useEffect`) en funciones reutilizables (`useFetch`, `useForm`).
-4. **Composición con `children`:** Evita pasar props por 5 niveles innecesarios usando la propiedad `children`.
-5. **Estado Local Cercano:** Mantén el estado en el componente más cercano que lo necesita, evitando estados globales prematuros.
-6. **Keys Únicas y Estables:** Al renderizar listas con `.map()`, usa siempre IDs únicos (`item.id`). Evita usar el índice (`index`) del array como key.
+- `src/services/userService.js`: Simulación de un servicio API con promesas y retardo (`delay`).
+- `src/components/UserList.jsx`: Componente **Presentacional** puro que recibe la lista de usuarios y un evento de selección.
+- `src/containers/UserListContainer.jsx`: Componente **Contenedor** que gestiona el ciclo de vida de la petición asíncrona.
+- `src/App.jsx`: Punto de entrada que monta el contenedor.
+
+---
+
+## ✏️ Reto Práctico: Tu Turno
+
+1. **Agregar botón de Recarga (*Refresh*):**
+   - Agrega un botón *"Recargar Usuarios"* en el componente presentacional.
+   - Pásale una prop `onRefresh` desde el contenedor para que vuelva a disparar la petición a la API.
+
+2. **Simular y Manejar Errores:**
+   - Modifica `userService.js` para que acepte un parámetro opcional `shouldFail = false`.
+   - Agrega un checkbox en la UI para simular un fallo en la red y comprueba que se renderice el mensaje de error apropiadamente.
+
+---
+
+## 🚀 Cómo ejecutar esta lección
+
+```bash
+npm run dev
+```
+
+Abre [http://localhost:5173](http://localhost:5173) y observa el estado de carga seguido de la lista renderizada.
