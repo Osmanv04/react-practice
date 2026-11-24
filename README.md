@@ -1,100 +1,72 @@
-# ⚛️ Repositorio de Aprendizaje: React desde Cero (JS)
+# 📘 Lección 07: Enrutamiento y Navegación con React Router
 
-Este repositorio está estructurado para aprender React paso a paso mediante ramas (`branches`). La rama `main` contiene la configuración base del proyecto, las instrucciones de configuración y la guía de arquitectura y buenas prácticas. Cada rama posterior (`lesson/...`) contiene una lección práctica con ejemplos y código funcional.
+En esta lección aprenderás a transformar tu aplicación en una **Single Page Application (SPA)** con navegación entre páginas sin recargar el navegador, utilizando la librería estándar **React Router**.
 
 ---
 
-## 🛠️ Cómo se creó este proyecto
+## 🎯 Objetivos de Aprendizaje
 
-Este proyecto fue inicializado con **Vite** y la plantilla de **React con JavaScript**:
+1. Entender la diferencia entre la navegación web tradicional (recarga completa) y el enrutamiento del lado del cliente (Client-Side Routing).
+2. Configurar `BrowserRouter`, `Routes` y `Route`.
+3. Navegar de forma declarativa con `<Link>` y `<NavLink>` (enlaces activos).
+4. Capturar parámetros dinámicos en la URL con el hook `useParams` (ej: `/productos/:id`).
+5. Realizar navegación programática con el hook `useNavigate`.
+6. Manejar rutas no encontradas (Página 404).
+
+---
+
+## 🧠 Conceptos Clave
+
+### 1. ¿Por qué NO usar `<a href="...">` en React?
+Las etiquetas HTML tradicionales `<a>` provocan que el navegador solicite una página HTML completa al servidor, borrando el estado de JavaScript y recargando toda la app.
+En su lugar, usamos `<Link to="...">` de React Router, que intercepta el clic y cambia la URL en el historial del navegador mediante la API de `History` sin recargar la pantalla.
+
+### 2. Componentes Fundamentales
+- `BrowserRouter`: Envuelve la aplicación para habilitar el contexto de rutas.
+- `Routes`: Contenedor inteligente que busca la mejor coincidencia entre sus rutas hijas.
+- `Route path="..." element={<Componente />}`: Asocia un patrón de URL a un componente JSX.
+- `NavLink`: Similar a `Link`, pero inyecta automáticamente una clase o estilo si la ruta está activa actualmente.
+
+### 3. Rutas Dinámicas con `useParams`
+Permite extraer parámetros dinámicos definidos en la ruta con dos puntos (`:param`):
+```jsx
+// Ruta: <Route path="/usuarios/:id" element={<UserDetail />} />
+import { useParams } from 'react-router-dom';
+
+function UserDetail() {
+  const { id } = useParams();
+  return <h2>Detalle del usuario #{id}</h2>;
+}
+```
+
+---
+
+## 📂 Archivos de esta Lección
+
+- `src/pages/Home.jsx`: Página de inicio.
+- `src/pages/About.jsx`: Página de información sobre el proyecto.
+- `src/pages/CourseDetail.jsx`: Página dinámica que lee `:courseId` con `useParams` y navega con `useNavigate`.
+- `src/pages/NotFound.jsx`: Página 404 para rutas inexistentes (`path="*"`).
+- `src/components/Navbar.jsx`: Barra de navegación con enlaces activos (`NavLink`).
+- `src/App.jsx`: Definición y configuración del árbol de rutas.
+
+---
+
+## ✏️ Reto Práctico: Tu Turno
+
+1. **Agregar una nueva ruta `/contacto`:**
+   - Crea `src/pages/Contact.jsx` con un formulario simple.
+   - Agrégalo a las rutas en `App.jsx` y añade el enlace en `Navbar.jsx`.
+
+2. **Botón "Volver atrás" con `useNavigate`:**
+   - En `CourseDetail.jsx`, agrega un botón que ejecute `navigate(-1)` para regresar a la página anterior en el historial del navegador.
+
+---
+
+## 🚀 Cómo ejecutar esta lección
 
 ```bash
-# 1. Crear proyecto React (JavaScript) con Vite
-npm create vite@latest . -- --template react
-
-# 2. Inicializar repositorio Git
-git init
-git branch -M main
-
-# 3. Instalar dependencias
-npm install
-
-# 4. Iniciar servidor de desarrollo
 npm run dev
 ```
 
----
-
-## 🌿 Estructura de Ramas (Lecciones)
-
-Cada lección vive en su propia rama para aislar los conceptos:
-
-| Rama                                         | Descripción                       | Conceptos Clave                    |
-| :------------------------------------------- | :-------------------------------- | :--------------------------------- |
-| `main`                                       | Base del proyecto y documentación | Vite, setup, arquitectura          |
-| `lesson/01-componentes-y-jsx`                | Componentes y JSX                 | Funciones, JSX, Props, SRP         |
-| `lesson/02-gestion-de-estado-y-eventos`      | Estado y Eventos                  | `useState`, manejadores de eventos |
-| `lesson/03-composicion-vs-prop-drilling`     | Composición                       | `children`, evitar prop drilling   |
-| `lesson/04-custom-hooks`                     | Custom Hooks                      | Reutilización de lógica reactiva   |
-| `lesson/05-patron-contenedor-presentacional` | Patrón Contenedor/Presentacional  | Separación lógica vs interfaz      |
-| `lesson/06-listas-y-keys-estables`           | Renderizado de Listas             | `.map()`, keys únicas y estables   |
-
----
-
-## 🔄 Cómo navegar entre lecciones
-
-Para ver todas las lecciones disponibles:
-
-```bash
-git branch -a
-```
-
-Para cambiarte a una lección específica y explorarla:
-
-```bash
-git checkout lesson/01-componentes-y-jsx
-npm run dev
-```
-
-Para regresar a la rama principal:
-
-```bash
-git checkout main
-```
-
----
-
-## 📁 Arquitectura Recomendada por Funcionalidad (Features)
-
-Para proyectos escalables en React, se recomienda estructurar por **funcionalidades (features)** en lugar de agrupar sólo por tipo de archivo:
-
-```text
-src/
-├── assets/                  # Recursos estáticos globales (imágenes, SVGs)
-├── components/              # Componentes de UI genéricos (Button, Modal, Input)
-├── features/                # Módulos organizados por funcionalidad
-│   ├── auth/
-│   │   ├── components/      # LoginForm.jsx, UserMenu.jsx
-│   │   ├── hooks/           # useAuth.js
-│   │   └── api/             # authApi.js
-│   └── products/
-│       ├── components/      # ProductCard.jsx, ProductList.jsx
-│       ├── hooks/           # useProducts.js
-│       └── utils/           # formatPrice.js
-├── hooks/                   # Custom hooks globales reutilizables
-├── services/                # Clientes API y llamadas externas
-└── utils/                  # Funciones utilitarias globales
-```
-
----
-
-## 📐 Principios de Buenas Prácticas
-
-1. **Responsabilidad Única (SRP):** Cada componente debe hacer una sola cosa y hacerla bien. Si supera 100-150 líneas o mezcla demasiadas responsabilidades, divídelo.
-2. **Separación de Lógica y Presentación:**
-   - _Contenedor:_ Maneja el estado, llamadas a APIs y lógica de negocio.
-   - _Presentacional:_ Componentes puros enfocados solo en renderizar la UI a partir de props.
-3. **Custom Hooks:** Encapsula lógica con estado (`useState`, `useEffect`) en funciones reutilizables (`useFetch`, `useForm`).
-4. **Composición con `children`:** Evita pasar props por 5 niveles innecesarios usando la propiedad `children`.
-5. **Estado Local Cercano:** Mantén el estado en el componente más cercano que lo necesita, evitando estados globales prematuros.
-6. **Keys Únicas y Estables:** Al renderizar listas con `.map()`, usa siempre IDs únicos (`item.id`). Evita usar el índice (`index`) del array como key.
+Abre [http://localhost:5173](http://localhost:5173) y haz clic en los enlaces de navegación para notar la velocidad instantánea sin parpadeo ni recargas.
