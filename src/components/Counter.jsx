@@ -7,15 +7,22 @@ import { useState } from 'react';
  * - Manejadores de eventos onClick.
  * - Actualización funcional del estado (prev => prev + step).
  */
-export function Counter({ initialCount = 0, step = 1 }) {
+export function Counter({ initialCount = 0, step = 1, min = 0 }) {
     const [count, setCount] = useState(initialCount);
 
     const handleIncrement = () => {
-        setCount((prev) => prev + step);
+        
+            setCount((prev) => prev + step);
+        
     };
 
     const handleDecrement = () => {
-        setCount((prev) => prev - step);
+        if (count > min) {
+            setCount((prev) => prev - step);
+        }
+        else {
+            alert("El valorno puede ser 0")
+        }
     };
 
     const handleReset = () => {
